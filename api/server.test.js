@@ -1,4 +1,5 @@
 const request = require("supertest");
+const { set } = require("../api/server");
 const app = require("../api/server");
 const db = require("../data/dbConfig");
 
@@ -59,22 +60,34 @@ describe('[2] - test /api/auth/login endpoint', ()=>{
     expect(res2.body).toHaveProperty("message");
     expect(res2.body.message).toMatch(/username and password required/);
   })
-  test('[2-3] - On FAILED login due to `username` not existing in the db, or `password` being incorrect,  the response body should include a string exactly as follows: "invalid credentials', ()=>{
-
+  test('[2-3] - On FAILED login due to `username` not existing in the db, or `password` being incorrect,  the response body should include a string exactly as follows: "invalid credentials', async ()=>{
+    const res1 = await request(app).post("/api/auth/login").send({username:"other", password:"tomtom"});
+    expect(res1.status).toBe(400);
+    expect(res1.body).toHaveProperty("message");
+    expect(res1.body.message).toMatch(/invalid credentials/);
   })
 })
 
-describe('[1] - test /apijokes endpoint', ()=>{
-  test('[1] - ', ()=>{
-
+describe('[3] - test /apijokes endpoint', ()=>{
+  test('[3-1] - On valid token in the Authorization header, call next.', async ()=>{
+    await request(app).post("/api/auth/register").send({username:"tomtom", password:"tomtom"});
+    const res = await request(app).post("/api/auth/login").send({username:"tomtom", password:"tomtom"});
+    const {token} = res.body;
+    console.log("token = ", token);
+    expect(res.body).toHaveProperty("token");
+    const res2 = await request(app).get("/api/jokes").set('Authorization',token);
+    expect(res2.body[0]).toHaveProperty('joke');
   })
-  test('[1] - On valid token in the Authorization header, call next.', ()=>{
-
+  test('[3-2] - On missing token in the Authorization header, the response body should include a string exactly as follows: "token required".', async ()=>{
+    const res2 = await request(app).get("/api/jokes");
+    expect(res2.body.message).toMatch(/token required/);
   })
-  test('[1] - On missing token in the Authorization header, the response body should include a string exactly as follows: "token required".', ()=>{
-
-  })
-  test('[1] - On invalid or expired token in the Authorization header, the response body should include a string exactly as follows: "token invalid".', ()=>{
+  test('[3-3] - On invalid or expired token in the Authorization header, the response body should include a string exactly as follows: "token invalid".', async ()=>{
+    const res = await request(app).post("/api/auth/login").send({username:"tomtom", password:"tomtom"});
+    const {token} = res.body;
+    expect(res.body).toHaveProperty("token");
+    const res2 = await request(app).get("/api/jokes").set('Authorization',token+"qq");
+    expect(res2.body.message).toMatch(/token invalid/);
 
   })
 })
