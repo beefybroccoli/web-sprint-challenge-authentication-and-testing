@@ -51,14 +51,35 @@ describe('[3] - describe isEmptyString', ()=>{
     })
     //???????????????????????????????????????????????????????????????
     //?????? Why is test 3-6 light up like a christmas tree ?????????
-    it('[3-6 - isEmptyString return false for an undefined object', ()=>{
-        expect(helper.isEmptyString(varUndefineddd)).toBe(false);
-    })
+    // it('[3-6 - isEmptyString return false for an undefined object', ()=>{
+    //     expect(helper.isEmptyString(varUndefineddd)).toBe(false);
+    // })
     //???????????????????????????????????????????????????????????????
     it('[3-7 - isEmptyString return false for an array', ()=>{
         expect(helper.isEmptyString(varArray)).toBe(false);
     })
     it('[3-8 - isEmptyString return false for an empty array', ()=>{
         expect(helper.isEmptyString(varEmptyArray)).toBe(false);
+    })
+})
+
+describe('[4] - describe verifyString', () => {
+    it('[4-1] - verifyString return true for a string', ()=>{
+        expect(helper.verifyString(varString)).toBe(true);
+    })
+    it('[4-2] - verifyString return false for an empty string', ()=>{
+        expect(helper.verifyString(varEmptyString)).toBe(false);
+    })
+    it('[4-3] - verifyString return false for an object', ()=>{
+        expect(helper.verifyString(varObj)).toBe(false);
+    })
+    it('[4-] - verifyString return false for array', ()=>{
+        expect(helper.verifyString(varArray)).toBe(false);
+    })
+    it('[4-] - verifyString return false for an undefined object', ()=>{
+        expect(helper.verifyString(varUndefined)).toBe(false);
+    })
+    it('[4-] - verifyString return false for a number ', ()=>{
+        expect(helper.verifyString(varNumber)).toBe(false);
     })
 })

@@ -11,7 +11,7 @@ function isEmptyString(input){
 }
 
 function verifyString(input){
-    return !isUndefined(input) && isString(input) && !isEmptyString;
+    return !isUndefined(input) && isString(input) && !isEmptyString(input);
 }
 
 function isEmptyArray(input){
