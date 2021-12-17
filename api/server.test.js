@@ -48,8 +48,16 @@ describe('[2] - test /api/auth/login endpoint', ()=>{
     expect(res2.body).toHaveProperty("token");
     expect(res2.body.message).toMatch(/welcome, tomtom/);
   })
-  test('[2-2] - In order to log into an existing account the client must provide `username` and `password`. the response body should include a string exactly as follows: "username and password required"', ()=>{
-
+  test('[2-2] - In order to log into an existing account the client must provide `username` and `password`. the response body should include a string exactly as follows: "username and password required"', async ()=>
+  {
+    const res1 = await request(app).post("/api/auth/login").send({username:"tomtom"});
+    const res2 = await request(app).post("/api/auth/login").send({password:"tomtom"});
+    expect(res1.status).toBe(400);
+    expect(res1.body).toHaveProperty("message");
+    expect(res1.body.message).toMatch(/username and password required/);
+    expect(res2.status).toBe(400);
+    expect(res2.body).toHaveProperty("message");
+    expect(res2.body.message).toMatch(/username and password required/);
   })
   test('[2-3] - On FAILED login due to `username` not existing in the db, or `password` being incorrect,  the response body should include a string exactly as follows: "invalid credentials', ()=>{
 
