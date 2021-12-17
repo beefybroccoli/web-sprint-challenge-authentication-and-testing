@@ -1,5 +1,4 @@
 const request = require("supertest");
-const { set } = require("../api/server");
 const app = require("../api/server");
 const db = require("../data/dbConfig");
 
@@ -38,10 +37,6 @@ describe('[1] - test /api/auth/register endpoint', ()=>{
 describe('[2] - test /api/auth/login endpoint', ()=>{
   test("[2-1] - On SUCCESSFUL login, the response body should have `message` and `token`"
   , async ()=>{
-    // {
-    //   "message": "welcome, Captain Marvel",
-    //   "token": "eyJhbGciOiJIUzI ... ETC ... vUPjZYDSa46Nwz8"
-    // }
     const res = await request(app).post("/api/auth/register").send({username:"tomtom", password:"tomtom"});
     const res2 = await request(app).post("/api/auth/login").send({username:"tomtom", password:"tomtom"});
     expect(res2.status).toBe(200);
@@ -73,7 +68,6 @@ describe('[3] - test /apijokes endpoint', ()=>{
     await request(app).post("/api/auth/register").send({username:"tomtom", password:"tomtom"});
     const res = await request(app).post("/api/auth/login").send({username:"tomtom", password:"tomtom"});
     const {token} = res.body;
-    console.log("token = ", token);
     expect(res.body).toHaveProperty("token");
     const res2 = await request(app).get("/api/jokes").set('Authorization',token);
     expect(res2.body[0]).toHaveProperty('joke');
