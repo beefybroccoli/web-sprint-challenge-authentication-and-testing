@@ -1,7 +1,9 @@
-const { BCRYPT_ROUND} = require("../../env");
+require('dotenv').config();
+const { BCRYPT_ROUND, SECRET} = require("../../env");
 const {verifyString, isEmptyArray} = require("../helper");
 const modelUsers = require("./users-model");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 async function verifyUsernamePassword ( req, res, next){
     
@@ -58,8 +60,25 @@ async function verifyCredentials (req, res, next){
 
 async function buildToken (req, res, next){
 
-    req.authenticatedUser.token = 'empty token';
+    req.authenticatedUser.token = jwt.sign(
+        {
+            id: req.authenticatedUser.id,
+            username: req.authenticatedUser.username,
+        },
+        process.env.SECRET || SECRET,
+        {
+            expiresIn: "1d",
+        }
+    );
     next();
 }
 
-module.exports = {verifyUsernamePassword, verifyUniqueFreeUsername, hashPassword, verifyCredentials, buildToken};
+function verifyToken (req){
+    const {authorization} = req.headers;
+    const decodedToken = jwt.verify(authorization, process.env.SECRET || SECRET);
+    req.decodedToken = decodedToken;
+    console.log("req.decodedToken = ", req.decodedToken);
+    return Boolean(decodedToken);
+}
+
+module.exports = {verifyUsernamePassword, verifyUniqueFreeUsername, hashPassword, verifyCredentials, buildToken, verifyToken};
