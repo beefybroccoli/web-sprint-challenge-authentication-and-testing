@@ -67,7 +67,6 @@ function verifyToken(req) {
         const { authorization } = req.headers;
         const decodedToken = jwt.verify(authorization, process.env.SECRET || SECRET);
         req.decodedToken = decodedToken;
-        console.log("req.decodedToken = ", req.decodedToken);
         return true;
     } catch (err) {
         return false;
