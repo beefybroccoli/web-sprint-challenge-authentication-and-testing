@@ -38,7 +38,6 @@ async function verifyUniqueFreeUsername(req, res, next){
     }catch(err){
         next(err);
     }
-    
 }
 
 async function hashPassword (req, res, next){
@@ -57,4 +56,10 @@ async function verifyCredentials (req, res, next){
     }
 }
 
-module.exports = {verifyUsernamePassword, verifyUniqueFreeUsername, hashPassword, verifyCredentials};
+async function buildToken (req, res, next){
+
+    req.authenticatedUser.token = 'empty token';
+    next();
+}
+
+module.exports = {verifyUsernamePassword, verifyUniqueFreeUsername, hashPassword, verifyCredentials, buildToken};

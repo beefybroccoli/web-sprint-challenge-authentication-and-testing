@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {verifyUsernamePassword,verifyUniqueFreeUsername, hashPassword, verifyCredentials } = require("./users-middleware");
+const {verifyUsernamePassword,verifyUniqueFreeUsername, hashPassword, verifyCredentials, buildToken } = require("./users-middleware");
 const modelUsers = require("./users-model");
 
 router.post('/register', verifyUsernamePassword, verifyUniqueFreeUsername, hashPassword, async (req, res, next) => {
@@ -22,7 +22,7 @@ router.post('/register', verifyUsernamePassword, verifyUniqueFreeUsername, hashP
       }
 });
 
-router.post('/login', verifyUsernamePassword, verifyCredentials, async (req, res, next) => {
+router.post('/login', verifyUsernamePassword, verifyCredentials, buildToken, async (req, res, next) => {
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -49,7 +49,8 @@ router.post('/login', verifyUsernamePassword, verifyCredentials, async (req, res
       the response body should include a string exactly as follows: "invalid credentials".
   */
   try{
-      res.status(200).json({message:`welcome, ${req.authenticatedUser.username}`});
+      const {username, token} = req.authenticatedUser;
+      res.status(200).json({message:`welcome, ${username}`, token});
 
   } catch(err){
     next(err);
