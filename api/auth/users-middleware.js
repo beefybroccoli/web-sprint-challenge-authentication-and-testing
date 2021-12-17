@@ -74,11 +74,15 @@ async function buildToken (req, res, next){
 }
 
 function verifyToken (req){
-    const {authorization} = req.headers;
-    const decodedToken = jwt.verify(authorization, process.env.SECRET || SECRET);
-    req.decodedToken = decodedToken;
-    console.log("req.decodedToken = ", req.decodedToken);
-    return Boolean(decodedToken);
+    try{
+        const {authorization} = req.headers;
+        const decodedToken = jwt.verify(authorization, process.env.SECRET || SECRET);
+        req.decodedToken = decodedToken;
+        console.log("req.decodedToken = ", req.decodedToken);
+        return true;
+    }catch(err){
+        return false;
+    }
 }
 
 module.exports = {verifyUsernamePassword, verifyUniqueFreeUsername, hashPassword, verifyCredentials, buildToken, verifyToken};
