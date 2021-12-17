@@ -73,13 +73,40 @@ describe('[4] - describe verifyString', () => {
     it('[4-3] - verifyString return false for an object', ()=>{
         expect(helper.verifyString(varObj)).toBe(false);
     })
-    it('[4-] - verifyString return false for array', ()=>{
-        expect(helper.verifyString(varArray)).toBe(false);
-    })
-    it('[4-] - verifyString return false for an undefined object', ()=>{
+    it('[4-4] - verifyString return false for an undefined object', ()=>{
         expect(helper.verifyString(varUndefined)).toBe(false);
     })
-    it('[4-] - verifyString return false for a number ', ()=>{
+    it('[4-5] - verifyString return false for a number ', ()=>{
         expect(helper.verifyString(varNumber)).toBe(false);
+    })
+    it('[4-6] - verifyString return false for an array', ()=>{
+        expect(helper.verifyString(varArray)).toBe(false);
+    })
+    it('[4-7] - verifyString return false for an empty array', ()=>{
+        expect(helper.verifyString(varEmptyArray)).toBe(false);
+    })
+})
+
+describe('[5] - describe isEmptyArray', ()=>{
+    it('[5-1] - isEmptyArray return true for an empty array', ()=>{
+        expect(helper.isEmptyArray(varEmptyArray)).toBe(true);
+    })
+    it('[5-2] - isEmptyArray return false for object', ()=>{
+        expect(helper.isEmptyArray(varObj)).toBe(false);
+    })
+    it('[5-3] - isEmptyArray return false for an undefined object ', ()=>{
+        expect(helper.isEmptyArray(varUndefined)).toBe(false);
+    })
+    it('[5-4] - isEmptyArray return false for number', ()=>{
+        expect(helper.isEmptyArray(varNumber)).toBe(false);
+    })
+    it('[5-5] - isEmptyArray return false for a string ', ()=>{
+        expect(helper.isEmptyArray(varString)).toBe(false);
+    })
+    it('[5-6] - isEmptyArray return false for an empty string ', ()=>{
+        expect(helper.isEmptyArray(varEmptyString)).toBe(false);
+    })
+    it('[5-7] - isEmptyArray return false for an array', ()=>{
+        expect(helper.isEmptyArray(varArray)).toBe(false);
     })
 })
