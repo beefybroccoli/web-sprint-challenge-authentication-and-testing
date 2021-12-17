@@ -1,20 +1,20 @@
-function isUndefined(input){
+function isUndefined(input) {
     return typeof input === 'undefined';
 }
 
-function isString(input){
+function isString(input) {
     return typeof input === 'string';
 }
 
-function isEmptyString(input){
+function isEmptyString(input) {
     return isString(input) && input.trim() === "";
 }
 
-function verifyString(input){
+function verifyString(input) {
     return !isUndefined(input) && isString(input) && !isEmptyString(input);
 }
 
-function isEmptyArray(input){
+function isEmptyArray(input) {
     return Array.isArray(input) && input.length === 0;
 }
-module.exports={isUndefined, isString, isEmptyString, verifyString, isEmptyArray};
+module.exports = { isUndefined, isString, isEmptyString, verifyString, isEmptyArray };
