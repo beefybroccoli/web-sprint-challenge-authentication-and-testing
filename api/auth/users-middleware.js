@@ -1,11 +1,15 @@
 const { BCRYPT_ROUND} = require("../../env");
+const {verifyString, isEmptyArray} = require("../helper");
+const modelUsers = require("./users-model");
+const bcrypt = require("bcrypt");
 
 async function verifyUsernamePassword ( req, res, next){
     
     // 3- On FAILED registration due to `username` or `password` missing from the request body, the response body should include a string exactly as follows: "username and password required".
     try{
-        if(){
-            
+        const {username, password} = req.body
+        if(!verifyString(username) || !verifyString(password)){
+            res.status(400).json({message:"username and password required"});
         }else{
             next();
         }
@@ -23,15 +27,26 @@ async function verifyUniqueFreeUsername(req, res, next){
     //         "username": "Captain Marvel", // must not exist already in the `users` table
     //         "password": "foobar"          // needs to be hashed before it's saved
     //       }
-
-    next();
+    try{
+        const {username} = req.body;
+        const array = await modelUsers.getBy({"username":username});
+        if (isEmptyArray(array)){
+            next();
+        }else{
+            res.status(400).json({message:"username taken"});
+        }
+    }catch(err){
+        next(err);
+    }
+    
 }
 
 async function hashPassword (req, res, next){
 
     // IMPLEMENT -  You are welcome to build additional middlewares to help with the endpoint's functionality. DO NOT EXCEED 2^8 ROUNDS OF HASHING!
     //BCRYPT_ROUND
-
+    const {username, password} = req.body;
+    req.body.hashedPassword = bcrypt.hashSync(password, BCRYPT_ROUND);
     next();
 }
 
@@ -42,3 +57,5 @@ async function compareUsername (req, res, next){
 async function comparePassword( req, res, next){
     next();
 }
+
+module.exports = {verifyUsernamePassword, verifyUniqueFreeUsername, hashPassword,comparePassword,compareUsername};

@@ -20,4 +20,4 @@ async function removeUserById(id){
     return await db('users').where('id', id);
 }
 
-module.exports = {getBy, getById, add: addUser, modify: modifyUser, removeById: removeUserById}
+module.exports = {getBy, getById, addUser, modify: modifyUser, removeById: removeUserById}
