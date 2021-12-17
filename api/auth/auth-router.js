@@ -17,11 +17,9 @@ router.post('/login', verifyUsernamePassword, verifyCredentials, buildToken, asy
   try {
     const { username, token } = req.authenticatedUser;
     res.status(200).json({ message: `welcome, ${username}`, token });
-
   } catch (err) {
     next(err);
   }
-
 });
 
 module.exports = router;
