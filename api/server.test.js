@@ -34,19 +34,24 @@ describe('[1] - test /api/auth/register endpoint', ()=>{
   })
 })
 
-describe('[1] - test /api/auth/login endpoint', ()=>{
-  test("[1] - On SUCCESSFUL login, the response body should have `message` and `token`"
-  , ()=>{
+describe('[2] - test /api/auth/login endpoint', ()=>{
+  test("[2-1] - On SUCCESSFUL login, the response body should have `message` and `token`"
+  , async ()=>{
     // {
     //   "message": "welcome, Captain Marvel",
     //   "token": "eyJhbGciOiJIUzI ... ETC ... vUPjZYDSa46Nwz8"
     // }
+    const res = await request(app).post("/api/auth/register").send({username:"tomtom", password:"tomtom"});
+    const res2 = await request(app).post("/api/auth/login").send({username:"tomtom", password:"tomtom"});
+    expect(res2.status).toBe(200);
+    expect(res2.body).toHaveProperty("message");
+    expect(res2.body).toHaveProperty("token");
+    expect(res2.body.message).toMatch(/welcome, tomtom/);
+  })
+  test('[2-2] - In order to log into an existing account the client must provide `username` and `password`. the response body should include a string exactly as follows: "username and password required"', ()=>{
 
   })
-  test('[1] - In order to log into an existing account the client must provide `username` and `password`. the response body should include a string exactly as follows: "username and password required"', ()=>{
-
-  })
-  test('[1] - On FAILED login due to `username` not existing in the db, or `password` being incorrect,  the response body should include a string exactly as follows: "invalid credentials', ()=>{
+  test('[2-3] - On FAILED login due to `username` not existing in the db, or `password` being incorrect,  the response body should include a string exactly as follows: "invalid credentials', ()=>{
 
   })
 })
