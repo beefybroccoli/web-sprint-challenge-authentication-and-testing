@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {verifyUsernamePassword,verifyUniqueFreeUsername, hashPassword} = require("./users-middleware");
+const {verifyUsernamePassword,verifyUniqueFreeUsername, hashPassword, verifyCredentials } = require("./users-middleware");
 const modelUsers = require("./users-model");
 
 router.post('/register', verifyUsernamePassword, verifyUniqueFreeUsername, hashPassword, async (req, res, next) => {
@@ -22,8 +22,7 @@ router.post('/register', verifyUsernamePassword, verifyUniqueFreeUsername, hashP
       }
 });
 
-router.post('/login', (req, res) => {
-  res.end('implement login, please!');
+router.post('/login', verifyUsernamePassword, verifyCredentials, async (req, res, next) => {
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -45,10 +44,17 @@ router.post('/login', (req, res) => {
     3- On FAILED login due to `username` or `password` missing from the request body,
       the response body should include a string exactly as follows: "username and password required".
     
-    compareUsername, comparePassword
+    verifyCredentials
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
   */
+  try{
+      res.status(200).json({message:`welcome, ${req.authenticatedUser.username}`});
+
+  } catch(err){
+    next(err);
+  }     
+      
 });
 
 module.exports = router;

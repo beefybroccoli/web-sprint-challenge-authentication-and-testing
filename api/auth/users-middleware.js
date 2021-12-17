@@ -42,20 +42,19 @@ async function verifyUniqueFreeUsername(req, res, next){
 }
 
 async function hashPassword (req, res, next){
-
-    // IMPLEMENT -  You are welcome to build additional middlewares to help with the endpoint's functionality. DO NOT EXCEED 2^8 ROUNDS OF HASHING!
-    //BCRYPT_ROUND
-    const {username, password} = req.body;
-    req.body.hashedPassword = bcrypt.hashSync(password, BCRYPT_ROUND);
+    req.body.hashedPassword = bcrypt.hashSync(req.body.password, BCRYPT_ROUND);
     next();
 }
 
-async function compareUsername (req, res, next){
-    next();
+async function verifyCredentials (req, res, next){
+    const{username, password} = req.body;
+    const array = await modelUsers.getBy({username});
+    if(isEmptyArray(array) || bcrypt.compareSync(password, array[0].password) === false){
+        res.status(400).json({message:"invalid credentials"});
+    }else{
+        req.authenticatedUser = array[0];
+        next();
+    }
 }
 
-async function comparePassword( req, res, next){
-    next();
-}
-
-module.exports = {verifyUsernamePassword, verifyUniqueFreeUsername, hashPassword,comparePassword,compareUsername};
+module.exports = {verifyUsernamePassword, verifyUniqueFreeUsername, hashPassword, verifyCredentials};
